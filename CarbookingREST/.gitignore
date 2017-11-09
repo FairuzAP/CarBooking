@@ -1,15 +1,13 @@
+/*/nb-configuration.xml
+/nbproject/
+/*/nbproject/
+/*/target/
+/*/build/
+/netbeans-gradle-default-models/gradle-api/
+.gradle/
+/.nb-gradle-properties
+.nb-gradle/
 
-.gradle
+# Directories left from old Ant project
 /build/
-
-# Ignore Gradle GUI config
-gradle-app.setting
-
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
-
-# Cache of project
-.gradletasknamecache
-
-# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
-# gradle/wrapper/gradle-wrapper.properties
+/nbproject/private/

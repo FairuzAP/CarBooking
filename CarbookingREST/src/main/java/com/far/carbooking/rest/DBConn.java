@@ -70,7 +70,6 @@ public class DBConn {
 	}
 	return res.toString();
     }
-    
     public static String getCarsJSON(int cityID) throws SQLException {
 	String sql = "SELECT mobil.id_mobil, mobil.merk, mobil.jenis\n"
 		+ "FROM kota INNER JOIN mobil ON mobil.id_kota = kota.id_kota\n"
@@ -123,7 +122,6 @@ public class DBConn {
 	}
 	return res.getJSONObject(0).toString();
     }
-    
     public static String getTransactionsJSON(Timestamp from, Timestamp to) throws SQLException {
 	String sql = "SELECT transaksi.id_transaksi, transaksi.`status`, transaksi.waktu_mulai\n"
 		+ "FROM transaksi\n"
@@ -160,6 +158,67 @@ public class DBConn {
 	    }
 	}
 	return res.getJSONObject(0).toString();
+    }
+    
+    public static void addCar(String merk, String jenis, int km, int biaya_per_hari, 
+	    String deskripsi, int tahun_produksi, int id_kota) throws SQLException {
+	
+	String sql = "INSERT INTO mobil(merk, jenis, km, biaya_per_hari, deskripsi, tahun_produksi, id_kota, `status`)\n"
+		+ "VALUES (?, ?, ?, ?, ?, ?, ?, 0);";
+	
+	if(!conn.isValid(10)) {
+	    conn = getConnection();
+	}
+	try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	    stmt.setString(1, merk);
+	    stmt.setString(2, jenis);
+	    stmt.setInt(3, km);
+	    stmt.setInt(4, biaya_per_hari);
+	    stmt.setString(5, deskripsi);
+	    stmt.setInt(6, tahun_produksi);
+	    stmt.setInt(7, id_kota);
+	    stmt.executeUpdate();
+	}
+    }
+    public static void updateCar(int carID, String merk, String jenis, int km, int biaya_per_hari, 
+	    String deskripsi, int tahun_produksi, int id_kota) throws SQLException {
+	
+	String sql = "UPDATE mobil SET merk=?, jenis=?, km=?, biaya_per_hari=?, deskripsi=?, tahun_produksi=?, id_kota=?\n"
+		+ "WHERE id_mobil=?";
+	
+	if(!conn.isValid(10)) {
+	    conn = getConnection();
+	}
+	try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	    stmt.setString(1, merk);
+	    stmt.setString(2, jenis);
+	    stmt.setInt(3, km);
+	    stmt.setInt(4, biaya_per_hari);
+	    stmt.setString(5, deskripsi);
+	    stmt.setInt(6, tahun_produksi);
+	    stmt.setInt(7, id_kota);
+	    stmt.setInt(8, carID);
+	    int numrows = stmt.executeUpdate();
+	    if(numrows<1) {
+		throw new SQLException("No row updated");
+	    }
+	}
+    }
+    public static void updateCarStatus(int carID, int status) throws SQLException {
+	String sql = "UPDATE mobil SET `status`=?\n"
+		+ "WHERE id_mobil=?";
+	
+	if(!conn.isValid(10)) {
+	    conn = getConnection();
+	}
+	try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	    stmt.setInt(1, status);
+	    stmt.setInt(2, carID);
+	    int numrows = stmt.executeUpdate();
+	    if(numrows<1) {
+		throw new SQLException("No row updated");
+	    }
+	}
     }
     
 }

@@ -28,7 +28,8 @@ import javax.ws.rs.core.MultivaluedMap;
 @Produces(MediaType.APPLICATION_JSON)
 public class Resource {
     
-    static final String ERROR_RESPONSE = "";
+    static final String ERROR_RESPONSE = "{\"success\": false}";
+    static final String OK_RESPONSE = "{\"success\": true}";
     
     @GET @Path("cities")
     public String getCities() {
@@ -89,27 +90,62 @@ public class Resource {
     
     @POST @Path("car")
     @Consumes("application/x-www-form-urlencoded")
-    public void addCar(MultivaluedMap<String, String> formParams) {
-	
+    public String addCar(MultivaluedMap<String, String> formParams) {
+	try {
+	    DBConn.addCar(
+		    formParams.getFirst("merk"), 
+		    formParams.getFirst("jenis"), 
+		    Integer.parseInt(formParams.getFirst("km")), 
+		    Integer.parseInt(formParams.getFirst("biaya_per_hari")), 
+		    formParams.getFirst("deskripsi"),
+		    Integer.parseInt(formParams.getFirst("tahun_produksi")), 
+		    Integer.parseInt(formParams.getFirst("id_kota")));
+	    return OK_RESPONSE;
+	} catch (NumberFormatException | SQLException ex) {
+	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	return ERROR_RESPONSE;
     }
     @POST @Path("car/{car_id}")
     @Consumes("application/x-www-form-urlencoded")
-    public void updateCar(@PathParam("car_id") String carID, MultivaluedMap<String, String> formParams) {
-	
+    public String updateCar(@PathParam("car_id") String carID, MultivaluedMap<String, String> formParams) {
+	try {
+	    DBConn.updateCar(
+		    Integer.parseInt(carID),
+		    formParams.getFirst("merk"), 
+		    formParams.getFirst("jenis"), 
+		    Integer.parseInt(formParams.getFirst("km")), 
+		    Integer.parseInt(formParams.getFirst("biaya_per_hari")), 
+		    formParams.getFirst("deskripsi"),
+		    Integer.parseInt(formParams.getFirst("tahun_produksi")), 
+		    Integer.parseInt(formParams.getFirst("id_kota")));
+	    return OK_RESPONSE;
+	} catch (NumberFormatException | SQLException ex) {
+	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	return ERROR_RESPONSE;
     }
     @POST @Path("car/{car_id}/status")
     @Consumes("application/x-www-form-urlencoded")
-    public String updateCarStatus(@PathParam("car_id") String carID) {
-	return "Hello, world!";
+    public String updateCarStatus(@PathParam("car_id") String carID, MultivaluedMap<String, String> formParams) {
+	try {
+	    DBConn.updateCarStatus(
+		    Integer.parseInt(carID),
+		    Integer.parseInt(formParams.getFirst("status")));
+	    return OK_RESPONSE;
+	} catch (NumberFormatException | SQLException ex) {
+	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	return ERROR_RESPONSE;
     }
     @POST @Path("trans")
     @Consumes("application/x-www-form-urlencoded")
-    public void addTrans(MultivaluedMap<String, String> formParams) {
-	
+    public String addTrans(MultivaluedMap<String, String> formParams) {
+	return ERROR_RESPONSE;
     }
     @POST @Path("trans/{trans_id}")
     @Consumes("application/x-www-form-urlencoded")
-    public void editTrans(@PathParam("trans_id") String trans_id, MultivaluedMap<String, String> formParams) {
-	
+    public String editTrans(@PathParam("trans_id") String trans_id, MultivaluedMap<String, String> formParams) {
+	return ERROR_RESPONSE;
     }
 }
