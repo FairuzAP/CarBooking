@@ -141,11 +141,42 @@ public class Resource {
     @POST @Path("trans")
     @Consumes("application/x-www-form-urlencoded")
     public String addTrans(MultivaluedMap<String, String> formParams) {
+	try {
+	    DBConn.addTransaction(
+		    Integer.parseInt(formParams.getFirst("status")), 
+		    new Timestamp(Long.parseLong(formParams.getFirst("waktu_mulai"))), 
+		    Integer.parseInt(formParams.getFirst("biaya_total")), 
+		    Integer.parseInt(formParams.getFirst("id_mobil")), 
+		    Integer.parseInt(formParams.getFirst("id_kota")), 
+		    formParams.getFirst("hp_peminjam"), 
+		    formParams.getFirst("email_peminjam"), 
+		    formParams.getFirst("nama_peminjam"), 
+		    new Timestamp(Long.parseLong(formParams.getFirst("waktu_selesai"))));
+	    return OK_RESPONSE;
+	} catch (NumberFormatException | SQLException ex) {
+	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
+	}
 	return ERROR_RESPONSE;
     }
     @POST @Path("trans/{trans_id}")
     @Consumes("application/x-www-form-urlencoded")
     public String editTrans(@PathParam("trans_id") String trans_id, MultivaluedMap<String, String> formParams) {
+	try {
+	    DBConn.updateTransaction(
+		    Integer.parseInt(trans_id), 
+		    Integer.parseInt(formParams.getFirst("status")), 
+		    new Timestamp(Long.parseLong(formParams.getFirst("waktu_mulai"))), 
+		    Integer.parseInt(formParams.getFirst("biaya_total")), 
+		    Integer.parseInt(formParams.getFirst("id_mobil")), 
+		    Integer.parseInt(formParams.getFirst("id_kota")), 
+		    formParams.getFirst("hp_peminjam"), 
+		    formParams.getFirst("email_peminjam"), 
+		    formParams.getFirst("nama_peminjam"), 
+		    new Timestamp(Long.parseLong(formParams.getFirst("waktu_selesai"))));
+	    return OK_RESPONSE;
+	} catch (NumberFormatException | SQLException ex) {
+	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
+	}
 	return ERROR_RESPONSE;
     }
 }

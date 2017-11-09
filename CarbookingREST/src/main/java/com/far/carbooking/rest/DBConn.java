@@ -221,4 +221,55 @@ public class DBConn {
 	}
     }
     
+    public static void addTransaction(int status, Timestamp waktu_mulai, int biaya_total, 
+	    int id_mobil, int id_kota, String hp_peminjam, String email_peminjam, 
+	    String nama_peminjam, Timestamp waktu_selesai) throws SQLException {
+	
+	String sql = "INSERT INTO transaksi(`status`, waktu_mulai, biaya_total, id_mobil, id_kota, hp_peminjam, email_peminjam, nama_peminjam, waktu_selesai)\n"
+	+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+	
+	if(!conn.isValid(10)) {
+	    conn = getConnection();
+	}
+	try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	    stmt.setInt(1, status);
+	    stmt.setTimestamp(2, waktu_mulai);
+	    stmt.setInt(3, biaya_total);
+	    stmt.setInt(4, id_mobil);
+	    stmt.setInt(5, id_kota);
+	    stmt.setString(6, hp_peminjam);
+	    stmt.setString(7, email_peminjam);
+	    stmt.setString(8, nama_peminjam);
+	    stmt.setTimestamp(9, waktu_selesai);
+	    stmt.executeUpdate();
+	}
+    }
+    public static void updateTransaction(int transID, int status, Timestamp waktu_mulai, int biaya_total, 
+	    int id_mobil, int id_kota, String hp_peminjam, String email_peminjam, 
+	    String nama_peminjam, Timestamp waktu_selesai) throws SQLException {
+	
+	String sql = "UPDATE transaksi SET `status`=?, waktu_mulai=?, biaya_total=?, id_mobil=?, "
+		+ "id_kota=?, hp_peminjam=?, email_peminjam=?, nama_peminjam=?, waktu_selesai=?\n"
+		+ "WHERE id_transaksi=?";
+	
+	if(!conn.isValid(10)) {
+	    conn = getConnection();
+	}
+	try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	    stmt.setInt(1, status);
+	    stmt.setTimestamp(2, waktu_mulai);
+	    stmt.setInt(3, biaya_total);
+	    stmt.setInt(4, id_mobil);
+	    stmt.setInt(5, id_kota);
+	    stmt.setString(6, hp_peminjam);
+	    stmt.setString(7, email_peminjam);
+	    stmt.setString(8, nama_peminjam);
+	    stmt.setTimestamp(9, waktu_selesai);
+	    stmt.setInt(10, transID);
+	    int numrows = stmt.executeUpdate();
+	    if(numrows<1) {
+		throw new SQLException("No row updated");
+	    }
+	}
+    }
 }
