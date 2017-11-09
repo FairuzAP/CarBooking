@@ -5,6 +5,10 @@
  */
 package com.far.carbooking.rest;
 
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -23,31 +27,64 @@ import javax.ws.rs.core.MultivaluedMap;
 @Path("api/rest")
 @Produces(MediaType.APPLICATION_JSON)
 public class Resource {
+    
+    static final String ERROR_RESPONSE = "";
+    
     @GET @Path("cities")
     public String getCities() {
-	return "Cities List!";
+	try {
+	    return DBConn.getCitiesJSON();
+	} catch (SQLException ex) {
+	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	return ERROR_RESPONSE;
     }
     @GET @Path("cities/{city_id}")
     public String getCars(@PathParam("city_id") String cityID) {
-	return "Cars List for City #" + cityID;
+	try {
+	    return DBConn.getCarsJSON(Integer.parseInt(cityID));
+	} catch (NumberFormatException | SQLException ex) {
+	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	return ERROR_RESPONSE;
     }
     @GET @Path("car/{car_id}")
     public String getCar(@PathParam("car_id") String carID) {
-	return "Car #" + carID;
+	try {
+	    return DBConn.getCarJSON(Integer.parseInt(carID));
+	} catch (NumberFormatException | SQLException ex) {
+	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	return ERROR_RESPONSE;
     }
     @GET @Path("car/{car_id}/status")
     public String getCarStatus(@PathParam("car_id") String carID) {
-	return "Car Status #" + carID;
+	try {
+	    return DBConn.getCarStatusJSON(Integer.parseInt(carID));
+	} catch (NumberFormatException | SQLException ex) {
+	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	return ERROR_RESPONSE;
     }
     @GET @Path("trans")
     public String listTransaction(
 	    @DefaultValue("0") @QueryParam("from") long from,
 	    @DefaultValue(""+Long.MAX_VALUE) @QueryParam("to") long to) {
-	return "Transaction from " + from + " to " + to;
+	try {
+	    return DBConn.getTransactionsJSON(new Timestamp(from), new Timestamp(to));
+	} catch (NumberFormatException | SQLException ex) {
+	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	return ERROR_RESPONSE;
     }
     @GET @Path("trans/{trans_id}")
     public String getTransaction(@PathParam("trans_id") String transID) {
-	return "Transaction #" + transID;
+	try {
+	    return DBConn.getTransaction(Integer.parseInt(transID));
+	} catch (NumberFormatException | SQLException ex) {
+	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	return ERROR_RESPONSE;
     }
     
     @POST @Path("car")
