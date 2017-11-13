@@ -179,4 +179,17 @@ public class Resource {
 	}
 	return ERROR_RESPONSE;
     }
+    @POST @Path("trans/{trans_id}/status")
+    @Consumes("application/x-www-form-urlencoded")
+    public String editTransStatus(@PathParam("trans_id") String trans_id, MultivaluedMap<String, String> formParams) {
+	try {
+	    DBConn.updateTransactionStatus(
+		    Integer.parseInt(trans_id), 
+		    Integer.parseInt(formParams.getFirst("status")));
+	    return OK_RESPONSE;
+	} catch (NumberFormatException | SQLException ex) {
+	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	return ERROR_RESPONSE;
+    }
 }

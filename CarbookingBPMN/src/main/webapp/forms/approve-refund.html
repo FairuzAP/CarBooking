@@ -1,0 +1,30 @@
+<form name="approveRefund">
+  <div class="form-group">
+    <label for="customerId">Transaction ID</label>
+    <input class="form-control"
+           cam-variable-type="String"
+           cam-variable-name="Transaction_ID"
+           name="customerId"
+           readonly="true" />
+  </div>
+  <div class="form-group">
+    <label for="transaction">Detail Transaksi</label>
+    <input class="form-control"
+           cam-variable-type="String"
+           cam-variable-name="transaction"
+           name="transaction"
+           readonly="true" />
+  </div>
+  <div class="form-group">
+      <div class="checkbox">
+        <label>
+          <input cam-variable-name="approved"
+                 cam-variable-type="Boolean"
+                 type="checkbox"
+                 name="approved"
+                 class="form-control" />
+          Approved and refunded?
+        </label>
+      </div>
+    </div>
+</form>
