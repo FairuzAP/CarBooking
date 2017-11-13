@@ -53,6 +53,38 @@ INSERT INTO `mobil` (`id_mobil`, `merk`, `jenis`, `km`, `biaya_per_hari`, `deskr
 /*!40000 ALTER TABLE `mobil` ENABLE KEYS */;
 
 
+-- Dumping structure for table car_rental.status_mobil
+CREATE TABLE IF NOT EXISTS `status_mobil` (
+  `id` int(11) DEFAULT NULL,
+  `status` text
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Dumping data for table car_rental.status_mobil: ~3 rows (approximately)
+DELETE FROM `status_mobil`;
+/*!40000 ALTER TABLE `status_mobil` DISABLE KEYS */;
+INSERT INTO `status_mobil` (`id`, `status`) VALUES
+	(0, 'Nonaktif'),
+	(1, 'Siap Dipinjam'),
+	(2, 'Sedang Dipinjam');
+/*!40000 ALTER TABLE `status_mobil` ENABLE KEYS */;
+
+
+-- Dumping structure for table car_rental.status_transaksi
+CREATE TABLE IF NOT EXISTS `status_transaksi` (
+  `id` int(11) DEFAULT NULL,
+  `status` text
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Dumping data for table car_rental.status_transaksi: ~2 rows (approximately)
+DELETE FROM `status_transaksi`;
+/*!40000 ALTER TABLE `status_transaksi` DISABLE KEYS */;
+INSERT INTO `status_transaksi` (`id`, `status`) VALUES
+	(0, 'Cancelled'),
+	(1, 'OnGoing'),
+	(2, 'Checked');
+/*!40000 ALTER TABLE `status_transaksi` ENABLE KEYS */;
+
+
 -- Dumping structure for table car_rental.transaksi
 CREATE TABLE IF NOT EXISTS `transaksi` (
   `id_transaksi` int(11) NOT NULL AUTO_INCREMENT,
