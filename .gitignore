@@ -119,7 +119,7 @@ local.properties
 /*/target/
 /*/build/
 /netbeans-gradle-default-models/gradle-api/
-.gradle/
+/*/.gradle/
 /.nb-gradle-properties
 .nb-gradle/
 
