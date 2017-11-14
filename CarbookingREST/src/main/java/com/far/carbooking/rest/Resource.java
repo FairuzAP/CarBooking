@@ -192,4 +192,17 @@ public class Resource {
 	}
 	return ERROR_RESPONSE;
     }
+	@POST @Path("trans/{trans_id}/date")
+    @Consumes("application/x-www-form-urlencoded")
+    public String editTransDate(@PathParam("trans_id") String trans_id, MultivaluedMap<String, String> formParams) {
+	try {
+	    DBConn.updateTransactionStatus(
+		    Integer.parseInt(trans_id), 
+		    new Timestamp(Long.parseLong(formParams.getFirst("waktu_selesai"))));
+	    return OK_RESPONSE;
+	} catch (NumberFormatException | SQLException ex) {
+	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	return ERROR_RESPONSE;
+    }
 }
