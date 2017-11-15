@@ -196,7 +196,7 @@ public class Resource {
     @Consumes("application/x-www-form-urlencoded")
     public String editTransDate(@PathParam("trans_id") String trans_id, MultivaluedMap<String, String> formParams) {
 	try {
-	    DBConn.updateTransactionStatus(
+	    DBConn.updateTransactionDate(
 		    Integer.parseInt(trans_id), 
 		    new Timestamp(Long.parseLong(formParams.getFirst("waktu_selesai"))));
 	    return OK_RESPONSE;

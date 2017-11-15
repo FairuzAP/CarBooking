@@ -291,7 +291,7 @@ public class DBConn {
 	}
     }
 	
-	public static void updateTransactionDate(int transID, Timestamp waktu_selesai) throws SQLException {
+    public static void updateTransactionDate(int transID, Timestamp waktu_selesai) throws SQLException {
 	
 	String sql = "UPDATE transaksi SET waktu_selesai=?\n"
 		+ "WHERE id_transaksi=?";
@@ -300,7 +300,7 @@ public class DBConn {
 	    conn = getConnection();
 	}
 	try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-	    stmt.setInt(1, status);
+	    stmt.setTimestamp(1, waktu_selesai);
 	    stmt.setInt(2, transID);
 	    int numrows = stmt.executeUpdate();
 	    if(numrows<1) {
