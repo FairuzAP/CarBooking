@@ -1,38 +1,41 @@
--- --------------------------------------------------------
--- Host:                         localhost
--- Versi server:                 10.1.21-MariaDB - mariadb.org binary distribution
--- OS Server:                    Win32
--- HeidiSQL Versi:               9.2.0.4947
--- --------------------------------------------------------
+/*
+Navicat MySQL Data Transfer
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET NAMES utf8mb4 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+Source Server         : MySQL
+Source Server Version : 100116
+Source Host           : localhost:3306
+Source Database       : car_rental
 
--- Dumping database structure for car_rental
-CREATE DATABASE IF NOT EXISTS `car_rental` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `car_rental`;
+Target Server Type    : MYSQL
+Target Server Version : 100116
+File Encoding         : 65001
 
+Date: 2017-11-15 07:01:35
+*/
 
--- Dumping structure for table car_rental.kota
-CREATE TABLE IF NOT EXISTS `kota` (
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for kota
+-- ----------------------------
+DROP TABLE IF EXISTS `kota`;
+CREATE TABLE `kota` (
   `id_kota` int(11) NOT NULL AUTO_INCREMENT,
   `kota` text,
   PRIMARY KEY (`id_kota`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
--- Dumping data for table car_rental.kota: ~2 rows (approximately)
-DELETE FROM `kota`;
-/*!40000 ALTER TABLE `kota` DISABLE KEYS */;
-INSERT INTO `kota` (`id_kota`, `kota`) VALUES
-	(1, 'Bandung'),
-	(2, 'Jakarta');
-/*!40000 ALTER TABLE `kota` ENABLE KEYS */;
+-- ----------------------------
+-- Records of kota
+-- ----------------------------
+INSERT INTO `kota` VALUES ('1', 'Bandung');
+INSERT INTO `kota` VALUES ('2', 'Jakarta');
 
-
--- Dumping structure for table car_rental.mobil
-CREATE TABLE IF NOT EXISTS `mobil` (
+-- ----------------------------
+-- Table structure for mobil
+-- ----------------------------
+DROP TABLE IF EXISTS `mobil`;
+CREATE TABLE `mobil` (
   `id_mobil` int(11) NOT NULL AUTO_INCREMENT,
   `merk` text,
   `jenis` text,
@@ -42,51 +45,55 @@ CREATE TABLE IF NOT EXISTS `mobil` (
   `tahun_produksi` text,
   `status` int(11) DEFAULT NULL,
   `id_kota` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_mobil`)
+  PRIMARY KEY (`id_mobil`),
+  KEY `Kota Asal` (`id_kota`),
+  CONSTRAINT `Kota Asal` FOREIGN KEY (`id_kota`) REFERENCES `kota` (`id_kota`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
--- Dumping data for table car_rental.mobil: ~0 rows (approximately)
-DELETE FROM `mobil`;
-/*!40000 ALTER TABLE `mobil` DISABLE KEYS */;
-INSERT INTO `mobil` (`id_mobil`, `merk`, `jenis`, `km`, `biaya_per_hari`, `deskripsi`, `tahun_produksi`, `status`, `id_kota`) VALUES
-	(1, 'Avanza', 'Sedan', 134, '50000', 'Avanza S Putih', '2016', 0, 1);
-/*!40000 ALTER TABLE `mobil` ENABLE KEYS */;
+-- ----------------------------
+-- Records of mobil
+-- ----------------------------
+INSERT INTO `mobil` VALUES ('1', 'Avanza', 'Sedan', '134', '50000', 'Avanza S Putih', '2016', '1', '1');
 
-
--- Dumping structure for table car_rental.status_mobil
-CREATE TABLE IF NOT EXISTS `status_mobil` (
+-- ----------------------------
+-- Table structure for status_mobil
+-- ----------------------------
+DROP TABLE IF EXISTS `status_mobil`;
+CREATE TABLE `status_mobil` (
   `id` int(11) DEFAULT NULL,
   `status` text
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Dumping data for table car_rental.status_mobil: ~3 rows (approximately)
-DELETE FROM `status_mobil`;
-/*!40000 ALTER TABLE `status_mobil` DISABLE KEYS */;
-INSERT INTO `status_mobil` (`id`, `status`) VALUES
-	(0, 'Nonaktif'),
-	(1, 'Siap Dipinjam'),
-	(2, 'Sedang Dipinjam');
-/*!40000 ALTER TABLE `status_mobil` ENABLE KEYS */;
+-- ----------------------------
+-- Records of status_mobil
+-- ----------------------------
+INSERT INTO `status_mobil` VALUES ('0', 'Nonaktif');
+INSERT INTO `status_mobil` VALUES ('1', 'Siap Dipinjam');
+INSERT INTO `status_mobil` VALUES ('2', 'Sedang Dipinjam');
 
-
--- Dumping structure for table car_rental.status_transaksi
-CREATE TABLE IF NOT EXISTS `status_transaksi` (
+-- ----------------------------
+-- Table structure for status_transaksi
+-- ----------------------------
+DROP TABLE IF EXISTS `status_transaksi`;
+CREATE TABLE `status_transaksi` (
   `id` int(11) DEFAULT NULL,
   `status` text
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Dumping data for table car_rental.status_transaksi: ~2 rows (approximately)
-DELETE FROM `status_transaksi`;
-/*!40000 ALTER TABLE `status_transaksi` DISABLE KEYS */;
-INSERT INTO `status_transaksi` (`id`, `status`) VALUES
-	(0, 'Cancelled'),
-	(1, 'OnGoing'),
-	(2, 'Checked');
-/*!40000 ALTER TABLE `status_transaksi` ENABLE KEYS */;
+-- ----------------------------
+-- Records of status_transaksi
+-- ----------------------------
+INSERT INTO `status_transaksi` VALUES ('0', 'Submitted');
+INSERT INTO `status_transaksi` VALUES ('1', 'Paid');
+INSERT INTO `status_transaksi` VALUES ('2', 'Ongoing');
+INSERT INTO `status_transaksi` VALUES ('3', 'Closed');
+INSERT INTO `status_transaksi` VALUES ('4', 'Canceled');
 
-
--- Dumping structure for table car_rental.transaksi
-CREATE TABLE IF NOT EXISTS `transaksi` (
+-- ----------------------------
+-- Table structure for transaksi
+-- ----------------------------
+DROP TABLE IF EXISTS `transaksi`;
+CREATE TABLE `transaksi` (
   `id_transaksi` int(11) NOT NULL AUTO_INCREMENT,
   `biaya_total` text,
   `status` int(11) DEFAULT NULL,
@@ -98,12 +105,10 @@ CREATE TABLE IF NOT EXISTS `transaksi` (
   `waktu_mulai` date DEFAULT NULL,
   `waktu_selesai` date DEFAULT NULL,
   PRIMARY KEY (`id_transaksi`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
--- Dumping data for table car_rental.transaksi: ~0 rows (approximately)
-DELETE FROM `transaksi`;
-/*!40000 ALTER TABLE `transaksi` DISABLE KEYS */;
-/*!40000 ALTER TABLE `transaksi` ENABLE KEYS */;
-/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+-- ----------------------------
+-- Records of transaksi
+-- ----------------------------
+INSERT INTO `transaksi` VALUES ('1', '10000', '4', '1', '1', '01234567', 'a@a.a.com', 'aaa', '2017-11-17', '2017-11-24');
+SET FOREIGN_KEY_CHECKS=1;
