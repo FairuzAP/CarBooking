@@ -30,7 +30,7 @@
     <bpmn:userTask id="Task_1r5p01g" name="Select Area">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="area_list" label="Area List" type="string">
+          <camunda:formField id="area_list" label="Area List" type="enum">
             <camunda:properties>
               <camunda:property id="readonly" value="true" />
             </camunda:properties>
@@ -87,25 +87,10 @@ url;]]></camunda:script>
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0yie1bw</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1f7gar8</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_02tswle</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_0yie1bw" sourceRef="ServiceTask_072koxy" targetRef="UserTask_0qh4lsj" />
-    <bpmn:sequenceFlow id="SequenceFlow_1f7gar8" sourceRef="UserTask_0qh4lsj" targetRef="UserTask_1fl70zw" />
-    <bpmn:userTask id="UserTask_1fl70zw" name="Input Booking Information">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="car_select" label="Car Select" type="string">
-            <camunda:properties>
-              <camunda:property id="required" value="true" />
-            </camunda:properties>
-          </camunda:formField>
-          <camunda:formField id="area_select" label="Area Select" type="string" />
-          <camunda:formField id="FormField_3rohne7" />
-        </camunda:formData>
-      </bpmn:extensionElements>
-      <bpmn:incoming>SequenceFlow_1f7gar8</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0cx3z1o</bpmn:outgoing>
-    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1f7gar8" sourceRef="ServiceTask_07knam7" targetRef="UserTask_0mcj0my" />
     <bpmn:serviceTask id="ServiceTask_0rhme8u" name="Create Transaction">
       <bpmn:extensionElements>
         <camunda:connector>
@@ -118,6 +103,300 @@ url;]]></camunda:script>
                 <camunda:entry key="Content-Type">application/x-www-form-urlencoded</camunda:entry>
               </camunda:map>
             </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:map>
+                <camunda:entry key="status">0</camunda:entry>
+                <camunda:entry key="waktu_mulai">
+                  <camunda:script scriptFormat="javascript"><![CDATA[execution.getVariable("waktu_mulai");]]></camunda:script>
+                </camunda:entry>
+                <camunda:entry key="biaya_total">
+                  <camunda:script scriptFormat="javascript" />
+                </camunda:entry>
+                <camunda:entry key="id_mobil">
+                  <camunda:script scriptFormat="javascript"><![CDATA[execution.getVariable("car_select");]]></camunda:script>
+                </camunda:entry>
+                <camunda:entry key="id_kota">
+                  <camunda:script scriptFormat="javascript"><![CDATA[execution.getVariable("area_select");]]></camunda:script>
+                </camunda:entry>
+                <camunda:entry key="hp_peminjam">
+                  <camunda:script scriptFormat="javascript"><![CDATA[execution.getVariable("hp_peminjam");]]></camunda:script>
+                </camunda:entry>
+                <camunda:entry key="email_peminjam">
+                  <camunda:script scriptFormat="javascript"><![CDATA[execution.getVariable("email_peminjam");]]></camunda:script>
+                </camunda:entry>
+                <camunda:entry key="nama_peminjam">
+                  <camunda:script scriptFormat="javascript"><![CDATA[execution.getVariable("nama_peminjam");]]></camunda:script>
+                </camunda:entry>
+                <camunda:entry key="waktu_selesai">
+                  <camunda:script scriptFormat="javascript"><![CDATA[execution.getVariable("waktu_selesai");]]></camunda:script>
+                </camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="Transaction_ID">
+              <camunda:script scriptFormat="javascript">S(response);</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0lfiapx</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_00vvces</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="UserTask_0mcj0my" name="Input Booking Information" camunda:assignee="john">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="id_mobil" label="Car ID" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="id_kota" label="City ID" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="hp_peminjam" label="Client Phone Number" type="string">
+            <camunda:properties>
+              <camunda:property id="required" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="email_peminjam" label="Client Email" type="string">
+            <camunda:properties>
+              <camunda:property id="required" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="nama_peminjam" label="Client Name" type="string">
+            <camunda:properties>
+              <camunda:property id="required" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="waktu_mulai" label="Start Date" type="date" />
+          <camunda:formField id="waktu_selesai" label="End Date" type="date" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1f7gar8</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0lfiapx</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0lfiapx" sourceRef="UserTask_0mcj0my" targetRef="ServiceTask_0rhme8u" />
+    <bpmn:userTask id="UserTask_0i4j3r4" name="Process and verify rental payment" camunda:assignee="demo">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Transaction_ID" label="Transaction ID" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="biaya_total" label="Booking Fee" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="status" label="Booking Status" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="id_mobil" label="Car ID" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="id_kota" label="City ID" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="hp_peminjam" label="Client Phone Number" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="email_peminjam" label="Client Email" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="nama_peminjam" label="Client Name" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="waktu_mulai" label="Start Date" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="waktu_selesai" label="End Date" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="approved" label="Approve and Update?" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_00vvces</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1opl2bq</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_00vvces" sourceRef="ServiceTask_0rhme8u" targetRef="UserTask_0i4j3r4" />
+    <bpmn:serviceTask id="ServiceTask_1q1mh9x" name="Update the Transaction Status to Paid">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="javascript"><![CDATA[var base = "http://localhost:2222/api/rest/trans/";
+var value = execution.getVariable("Transaction_ID");
+var url = base + value +"/status" ;
+url;]]></camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+                <camunda:entry key="Content-Type">application/x-www-form-urlencoded</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload"><![CDATA[status=2
+]]></camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1opl2bq</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0q62mlw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1opl2bq" sourceRef="UserTask_0i4j3r4" targetRef="ServiceTask_1q1mh9x" />
+    <bpmn:userTask id="UserTask_0bkcaze" name="Verify Car Retrieval" camunda:assignee="demo">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Transaction_ID" label="Transaction ID" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="biaya_total" label="Booking Fee" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="status" label="Booking Status" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="id_mobil" label="Car ID" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="id_kota" label="City ID" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="hp_peminjam" label="Client Phone Number" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="email_peminjam" label="Client Email" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="nama_peminjam" label="Client Name" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="waktu_mulai" label="Start Date" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="waktu_selesai" label="End Date" type="string">
+            <camunda:properties>
+              <camunda:property id="readonly" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="approved" label="Approve and Update?" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0q62mlw</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1iqrshj</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0q62mlw" sourceRef="ServiceTask_1q1mh9x" targetRef="UserTask_0bkcaze" />
+    <bpmn:serviceTask id="ServiceTask_1utkxvw" name="Update the Transaction Status to Ongoing">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="javascript"><![CDATA[var base = "http://localhost:2222/api/rest/trans/";
+var value = execution.getVariable("Transaction_ID");
+var url = base + value +"/status" ;
+url;]]></camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+                <camunda:entry key="Content-Type">application/x-www-form-urlencoded</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload"><![CDATA[status=3
+]]></camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1iqrshj</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0o17r5n</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1iqrshj" sourceRef="UserTask_0bkcaze" targetRef="ServiceTask_1utkxvw" />
+    <bpmn:serviceTask id="ServiceTask_0qz2ied" name="Update the Related Car Status">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="javascript"><![CDATA[var base = "http://localhost:2222/api/rest/car/";
+var value = execution.getVariable("transaction");
+var url = base + value.prop("id_mobil").value()+"/status" ;
+url;]]></camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+                <camunda:entry key="Content-Type">application/x-www-form-urlencoded</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">status=2</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0o17r5n</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0lz7aog</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0o17r5n" sourceRef="ServiceTask_1utkxvw" targetRef="ServiceTask_0qz2ied" />
+    <bpmn:endEvent id="EndEvent_0b7dpw6">
+      <bpmn:incoming>SequenceFlow_0lz7aog</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0lz7aog" sourceRef="ServiceTask_0qz2ied" targetRef="EndEvent_0b7dpw6" />
+    <bpmn:serviceTask id="ServiceTask_0ywamqw" name="List Available Cars">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="javascript"><![CDATA[var base = "http://localhost:2222/api/rest/cities";
+var url = base + execution.getVariable("area_select");
+url;]]></camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
             <camunda:outputParameter name="car_list">
               <camunda:script scriptFormat="javascript">S(response);</camunda:script>
             </camunda:outputParameter>
@@ -125,9 +404,34 @@ url;]]></camunda:script>
           <camunda:connectorId>http-connector</camunda:connectorId>
         </camunda:connector>
       </bpmn:extensionElements>
-      <bpmn:incoming>SequenceFlow_0cx3z1o</bpmn:incoming>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="SequenceFlow_0cx3z1o" sourceRef="UserTask_1fl70zw" targetRef="ServiceTask_0rhme8u" />
+    <bpmn:serviceTask id="ServiceTask_07knam7" name="Get Car Information">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="javascript"><![CDATA[var base = "http://localhost:2222/api/rest/car/";
+var value = execution.getVariable("car_select");
+var url = base + value;
+url;]]></camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="car_info">
+              <camunda:script scriptFormat="javascript">S(response);</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_02tswle</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1f7gar8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_02tswle" sourceRef="UserTask_0qh4lsj" targetRef="ServiceTask_07knam7" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
@@ -178,23 +482,103 @@ url;]]></camunda:script>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1f7gar8_di" bpmnElement="SequenceFlow_1f7gar8">
-        <di:waypoint xsi:type="dc:Point" x="872" y="120" />
-        <di:waypoint xsi:type="dc:Point" x="941" y="121" />
+        <di:waypoint xsi:type="dc:Point" x="989" y="160" />
+        <di:waypoint xsi:type="dc:Point" x="989" y="198" />
+        <di:waypoint xsi:type="dc:Point" x="324" y="198" />
+        <di:waypoint xsi:type="dc:Point" x="324" y="238" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="906.5" y="99.5" width="0" height="12" />
+          <dc:Bounds x="611.5" y="177" width="90" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_1fl70zw_di" bpmnElement="UserTask_1fl70zw">
-        <dc:Bounds x="941" y="81" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_0rhme8u_di" bpmnElement="ServiceTask_0rhme8u">
-        <dc:Bounds x="1105" y="80" width="100" height="80" />
+        <dc:Bounds x="438" y="238" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0cx3z1o_di" bpmnElement="SequenceFlow_0cx3z1o">
-        <di:waypoint xsi:type="dc:Point" x="1041" y="121" />
-        <di:waypoint xsi:type="dc:Point" x="1105" y="120" />
+      <bpmndi:BPMNShape id="UserTask_0mcj0my_di" bpmnElement="UserTask_0mcj0my">
+        <dc:Bounds x="275" y="238" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0lfiapx_di" bpmnElement="SequenceFlow_0lfiapx">
+        <di:waypoint xsi:type="dc:Point" x="375" y="279" />
+        <di:waypoint xsi:type="dc:Point" x="438" y="278" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1073" y="99.5" width="0" height="12" />
+          <dc:Bounds x="406.5" y="257.5" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0i4j3r4_di" bpmnElement="UserTask_0i4j3r4">
+        <dc:Bounds x="610" y="238" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_00vvces_di" bpmnElement="SequenceFlow_00vvces">
+        <di:waypoint xsi:type="dc:Point" x="538" y="278" />
+        <di:waypoint xsi:type="dc:Point" x="610" y="278" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="574" y="257" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1q1mh9x_di" bpmnElement="ServiceTask_1q1mh9x">
+        <dc:Bounds x="772" y="238" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1opl2bq_di" bpmnElement="SequenceFlow_1opl2bq">
+        <di:waypoint xsi:type="dc:Point" x="710" y="278" />
+        <di:waypoint xsi:type="dc:Point" x="772" y="278" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="741" y="257" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0bkcaze_di" bpmnElement="UserTask_0bkcaze">
+        <dc:Bounds x="274" y="399" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0q62mlw_di" bpmnElement="SequenceFlow_0q62mlw">
+        <di:waypoint xsi:type="dc:Point" x="822" y="318" />
+        <di:waypoint xsi:type="dc:Point" x="822" y="358" />
+        <di:waypoint xsi:type="dc:Point" x="324" y="358" />
+        <di:waypoint xsi:type="dc:Point" x="324" y="399" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="573" y="337" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1utkxvw_di" bpmnElement="ServiceTask_1utkxvw">
+        <dc:Bounds x="442" y="399" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1iqrshj_di" bpmnElement="SequenceFlow_1iqrshj">
+        <di:waypoint xsi:type="dc:Point" x="374" y="439" />
+        <di:waypoint xsi:type="dc:Point" x="442" y="439" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="408" y="418" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0qz2ied_di" bpmnElement="ServiceTask_0qz2ied">
+        <dc:Bounds x="610" y="399" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0o17r5n_di" bpmnElement="SequenceFlow_0o17r5n">
+        <di:waypoint xsi:type="dc:Point" x="542" y="439" />
+        <di:waypoint xsi:type="dc:Point" x="610" y="439" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="576" y="418" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0b7dpw6_di" bpmnElement="EndEvent_0b7dpw6">
+        <dc:Bounds x="787" y="421" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="805" y="461" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0lz7aog_di" bpmnElement="SequenceFlow_0lz7aog">
+        <di:waypoint xsi:type="dc:Point" x="710" y="439" />
+        <di:waypoint xsi:type="dc:Point" x="787" y="439" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="748.5" y="418" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0ywamqw_di" bpmnElement="ServiceTask_0ywamqw">
+        <dc:Bounds x="-162" y="-3" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_07knam7_di" bpmnElement="ServiceTask_07knam7">
+        <dc:Bounds x="939" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_02tswle_di" bpmnElement="SequenceFlow_02tswle">
+        <di:waypoint xsi:type="dc:Point" x="872" y="120" />
+        <di:waypoint xsi:type="dc:Point" x="939" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="905.5" y="99" width="0" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
