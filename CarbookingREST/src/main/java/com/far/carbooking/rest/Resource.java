@@ -7,8 +7,13 @@ package com.far.carbooking.rest;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -140,19 +145,26 @@ public class Resource {
     }
     @POST @Path("trans")
     @Consumes("application/x-www-form-urlencoded")
-    public String addTrans(MultivaluedMap<String, String> formParams) {
+    public String addTrans(MultivaluedMap<String, String> formParams) throws ParseException {
 	try {
-	    DBConn.addTransaction(
-		    Integer.parseInt(formParams.getFirst("status")), 
-		    new Timestamp(Long.parseLong(formParams.getFirst("waktu_mulai"))), 
-		    Integer.parseInt(formParams.getFirst("biaya_total")), 
-		    Integer.parseInt(formParams.getFirst("id_mobil")), 
-		    Integer.parseInt(formParams.getFirst("id_kota")), 
-		    formParams.getFirst("hp_peminjam"), 
-		    formParams.getFirst("email_peminjam"), 
-		    formParams.getFirst("nama_peminjam"), 
-		    new Timestamp(Long.parseLong(formParams.getFirst("waktu_selesai"))));
-	    return OK_RESPONSE;
+            System.out.println(formParams);
+            SimpleDateFormat datetimeFormatter = new SimpleDateFormat(
+                "EEE MMM dd hh:mm:ss z yyyy");
+            Date startDate = datetimeFormatter.parse(formParams.getFirst("waktu_mulai"));
+            Date finishDate = datetimeFormatter.parse(formParams.getFirst("waktu_selesai"));
+            int dayCharge = Integer.parseInt(formParams.getFirst("biaya_per_hari"));
+            long diffInMillies = finishDate.getTime() - startDate.getTime();
+            int dayOffset = (int) TimeUnit.DAYS.convert(diffInMillies, TimeUnit.SECONDS);
+	    return DBConn.addTransaction(
+                Integer.parseInt(formParams.getFirst("status")),
+                new Timestamp(startDate.getTime()), 
+                dayCharge * dayOffset / 1000, 
+                Integer.parseInt(formParams.getFirst("id_mobil")), 
+                Integer.parseInt(formParams.getFirst("id_kota")), 
+                formParams.getFirst("hp_peminjam"), 
+                formParams.getFirst("email_peminjam"), 
+                formParams.getFirst("nama_peminjam"), 
+                new Timestamp(finishDate.getTime()));
 	} catch (NumberFormatException | SQLException ex) {
 	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
 	}
@@ -160,19 +172,23 @@ public class Resource {
     }
     @POST @Path("trans/{trans_id}")
     @Consumes("application/x-www-form-urlencoded")
-    public String editTrans(@PathParam("trans_id") String trans_id, MultivaluedMap<String, String> formParams) {
+    public String editTrans(@PathParam("trans_id") String trans_id, MultivaluedMap<String, String> formParams) throws ParseException {
 	try {
+            SimpleDateFormat datetimeFormatter = new SimpleDateFormat(
+                "EEE MMM dd hh:mm:ss z yyyy");
+            Date startDate = datetimeFormatter.parse(formParams.getFirst("waktu_mulai"));
+            Date finishDate = datetimeFormatter.parse(formParams.getFirst("waktu_selesai"));
 	    DBConn.updateTransaction(
-		    Integer.parseInt(trans_id), 
-		    Integer.parseInt(formParams.getFirst("status")), 
-		    new Timestamp(Long.parseLong(formParams.getFirst("waktu_mulai"))), 
-		    Integer.parseInt(formParams.getFirst("biaya_total")), 
-		    Integer.parseInt(formParams.getFirst("id_mobil")), 
-		    Integer.parseInt(formParams.getFirst("id_kota")), 
-		    formParams.getFirst("hp_peminjam"), 
-		    formParams.getFirst("email_peminjam"), 
-		    formParams.getFirst("nama_peminjam"), 
-		    new Timestamp(Long.parseLong(formParams.getFirst("waktu_selesai"))));
+                Integer.parseInt(trans_id), 
+                Integer.parseInt(formParams.getFirst("status")),
+                new Timestamp(startDate.getTime()), 
+                Integer.parseInt(formParams.getFirst("biaya_total")), 
+                Integer.parseInt(formParams.getFirst("id_mobil")), 
+                Integer.parseInt(formParams.getFirst("id_kota")), 
+                formParams.getFirst("hp_peminjam"), 
+                formParams.getFirst("email_peminjam"), 
+                formParams.getFirst("nama_peminjam"), 
+                new Timestamp(finishDate.getTime()));
 	    return OK_RESPONSE;
 	} catch (NumberFormatException | SQLException ex) {
 	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
@@ -192,13 +208,20 @@ public class Resource {
 	}
 	return ERROR_RESPONSE;
     }
-	@POST @Path("trans/{trans_id}/date")
+    @POST @Path("trans/{trans_id}/extend")
     @Consumes("application/x-www-form-urlencoded")
-    public String editTransDate(@PathParam("trans_id") String trans_id, MultivaluedMap<String, String> formParams) {
+    public String extendTrans(@PathParam("trans_id") String trans_id, MultivaluedMap<String, String> formParams) throws ParseException {
 	try {
-	    DBConn.updateTransactionDate(
-		    Integer.parseInt(trans_id), 
-		    new Timestamp(Long.parseLong(formParams.getFirst("waktu_selesai"))));
+            SimpleDateFormat datetimeFormatter = new SimpleDateFormat(
+                "EEE MMM dd hh:mm:ss z yyyy");
+            Date finishDate = datetimeFormatter.parse(formParams.getFirst("waktu_selesai"));
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(finishDate);
+            cal.add(Calendar.DATE, Integer.parseInt(formParams.getFirst("days")));
+	    DBConn.extendTransaction(
+		    Integer.parseInt(trans_id),
+                    Integer.parseInt(formParams.getFirst("biaya_total")),
+		    new Timestamp(cal.getTime().getTime()));
 	    return OK_RESPONSE;
 	} catch (NumberFormatException | SQLException ex) {
 	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);

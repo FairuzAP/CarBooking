@@ -1,0 +1,18 @@
+<form name="selectArea">
+  <div class="form-group">
+    <label for="area_select">Select area</label>
+    <select id="area_select">
+		<option value=0>test</option>
+	</select>
+  </div>
+  <script>
+    var x = document.getElementById("mySelect");
+	var info = execution.getVariable("area_info");
+	for (var i in info) {
+		var option = document.createElement("option");
+		option.value = info[i].id_kota;
+		option.text = info[i].kota;
+		x.add(option);
+	}
+  </script>
+</form>

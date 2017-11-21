@@ -221,7 +221,7 @@ public class DBConn {
 	}
     }
     
-    public static void addTransaction(int status, Timestamp waktu_mulai, int biaya_total, 
+    public static String addTransaction(int status, Timestamp waktu_mulai, int biaya_total, 
 	    int id_mobil, int id_kota, String hp_peminjam, String email_peminjam, 
 	    String nama_peminjam, Timestamp waktu_selesai) throws SQLException {
 	
@@ -231,7 +231,8 @@ public class DBConn {
 	if(!conn.isValid(10)) {
 	    conn = getConnection();
 	}
-	try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        int id;
+	try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 	    stmt.setInt(1, status);
 	    stmt.setTimestamp(2, waktu_mulai);
 	    stmt.setInt(3, biaya_total);
@@ -243,6 +244,13 @@ public class DBConn {
 	    stmt.setTimestamp(9, waktu_selesai);
 	    stmt.executeUpdate();
 	}
+        
+        String sql2 = "SELECT last_insert_id()";
+        JSONArray res;
+	try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql2)) {
+	    res = parseResult(rs);
+	}
+	return "{\"trans_id\":" + ((JSONObject)res.get(0)).get("last_insert_id()") + "}";
     }
     public static void updateTransaction(int transID, int status, Timestamp waktu_mulai, int biaya_total, 
 	    int id_mobil, int id_kota, String hp_peminjam, String email_peminjam, 
@@ -275,7 +283,7 @@ public class DBConn {
 
     public static void updateTransactionStatus(int transID, int status) throws SQLException {
 	
-	String sql = "UPDATE transaksi SET `status`=?\n"
+	String sql = "UPDATE transaksi SET `status`=?, \n"
 		+ "WHERE id_transaksi=?";
 	
 	if(!conn.isValid(10)) {
@@ -290,18 +298,19 @@ public class DBConn {
 	    }
 	}
     }
+    
+    public static void extendTransaction(int transID, int biaya_total, Timestamp waktu_selesai) throws SQLException {
 	
-    public static void updateTransactionDate(int transID, Timestamp waktu_selesai) throws SQLException {
-	
-	String sql = "UPDATE transaksi SET waktu_selesai=?\n"
+	String sql = "UPDATE transaksi SET `biaya_total`=?, `waktu_selesai`=?\n"
 		+ "WHERE id_transaksi=?";
 	
 	if(!conn.isValid(10)) {
 	    conn = getConnection();
 	}
 	try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-	    stmt.setTimestamp(1, waktu_selesai);
-	    stmt.setInt(2, transID);
+	    stmt.setInt(1, biaya_total);
+            stmt.setTimestamp(2, waktu_selesai);
+	    stmt.setInt(3, transID);
 	    int numrows = stmt.executeUpdate();
 	    if(numrows<1) {
 		throw new SQLException("No row updated");
