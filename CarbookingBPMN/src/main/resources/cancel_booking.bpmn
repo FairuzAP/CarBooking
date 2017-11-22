@@ -34,7 +34,7 @@ url;]]></camunda:script>
             </camunda:outputParameter>
             <camunda:outputParameter name="isSuccess">
               <camunda:script scriptFormat="javascript"><![CDATA[var resp = S(response);
-resp.hasProp("id_transaksi")]]></camunda:script>
+resp.hasProp("id_transaksi");]]></camunda:script>
             </camunda:outputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
@@ -222,7 +222,7 @@ execution.setVariable("waktu_selesai", trans.prop("waktu_selesai").value());]]><
     </bpmn:sequenceFlow>
     <bpmn:userTask id="notify_success" name="Notify user that booking cancelation is successful" camunda:assignee="john">
       <bpmn:extensionElements>
-<camunda:formData>
+        <camunda:formData>
           <camunda:formField id="Transaction_ID" label="Transaction ID" type="string">
             <camunda:properties>
               <camunda:property id="readonly" value="true" />
@@ -280,7 +280,7 @@ execution.setVariable("waktu_selesai", trans.prop("waktu_selesai").value());]]><
     </bpmn:userTask>
     <bpmn:userTask id="notify_failure" name="Notify user that booking can no longer be canceled " camunda:assignee="john">
       <bpmn:extensionElements>
-				<camunda:formData>
+        <camunda:formData>
           <camunda:formField id="Transaction_ID" label="Transaction ID" type="string">
             <camunda:properties>
               <camunda:property id="readonly" value="true" />

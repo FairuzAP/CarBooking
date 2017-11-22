@@ -213,15 +213,15 @@ public class Resource {
     public String extendTrans(@PathParam("trans_id") String trans_id, MultivaluedMap<String, String> formParams) throws ParseException {
 	try {
             SimpleDateFormat datetimeFormatter = new SimpleDateFormat(
-                "EEE MMM dd hh:mm:ss z yyyy");
+                "yyyy-MM-dd");
             Date finishDate = datetimeFormatter.parse(formParams.getFirst("waktu_selesai"));
             Calendar cal = Calendar.getInstance();
             cal.setTime(finishDate);
             cal.add(Calendar.DATE, Integer.parseInt(formParams.getFirst("days")));
 	    DBConn.extendTransaction(
-		    Integer.parseInt(trans_id),
-                    Integer.parseInt(formParams.getFirst("biaya_total")),
-		    new Timestamp(cal.getTime().getTime()));
+                Integer.parseInt(trans_id),
+                Integer.parseInt(formParams.getFirst("biaya_total")),
+                new Timestamp(cal.getTime().getTime()));
 	    return OK_RESPONSE;
 	} catch (NumberFormatException | SQLException ex) {
 	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
