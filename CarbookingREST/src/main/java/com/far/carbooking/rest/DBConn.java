@@ -70,17 +70,24 @@ public class DBConn {
 	}
 	return res.toString();
     }
-    public static String getCarsJSON(int cityID) throws SQLException {
+    public static String getCarsJSON(int cityID, int status) throws SQLException {
 	String sql = "SELECT mobil.id_mobil, mobil.merk, mobil.jenis\n"
 		+ "FROM kota INNER JOIN mobil ON mobil.id_kota = kota.id_kota\n"
 		+ "WHERE kota.id_kota = ?";
 	
+        if (status != -1) {
+             sql += " AND mobil.status = ?";
+        }
+        
 	if(!conn.isValid(10)) {
 	    conn = getConnection();
 	}
 	JSONArray res;
 	try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 	    stmt.setInt(1, cityID);
+            if (status != -1) {
+                stmt.setInt(2, status);
+            }
 	    try(ResultSet rs = stmt.executeQuery()) {
 		res = parseResult(rs);
 	    }
@@ -283,7 +290,7 @@ public class DBConn {
 
     public static void updateTransactionStatus(int transID, int status) throws SQLException {
 	
-	String sql = "UPDATE transaksi SET `status`=?, \n"
+	String sql = "UPDATE transaksi SET `status`=? \n"
 		+ "WHERE id_transaksi=?";
 	
 	if(!conn.isValid(10)) {

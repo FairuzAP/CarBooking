@@ -45,10 +45,10 @@ public class Resource {
 	}
 	return ERROR_RESPONSE;
     }
-    @GET @Path("cities/{city_id}")
-    public String getCars(@PathParam("city_id") String cityID) {
+    @GET @Path("cities/{city_id}/{status}")
+    public String getCars(@PathParam("city_id") String cityID, @PathParam("status") String status) {
 	try {
-	    return DBConn.getCarsJSON(Integer.parseInt(cityID));
+                return DBConn.getCarsJSON(Integer.parseInt(cityID), Integer.parseInt(status));
 	} catch (NumberFormatException | SQLException ex) {
 	    Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
 	}
@@ -147,7 +147,6 @@ public class Resource {
     @Consumes("application/x-www-form-urlencoded")
     public String addTrans(MultivaluedMap<String, String> formParams) throws ParseException {
 	try {
-            System.out.println(formParams);
             SimpleDateFormat datetimeFormatter = new SimpleDateFormat(
                 "EEE MMM dd hh:mm:ss z yyyy");
             Date startDate = datetimeFormatter.parse(formParams.getFirst("waktu_mulai"));

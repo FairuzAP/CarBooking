@@ -156,7 +156,7 @@ execution.setVariable("waktu_selesai", trans.prop("waktu_selesai").value());]]><
       <bpmn:outgoing>SequenceFlow_1vtwux0</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_1vtwux0" sourceRef="UserTask_0dirl2v" targetRef="ExclusiveGateway_16bdmbz" />
-    <bpmn:userTask id="UserTask_0zw5fya" name="Notify user that rental extension cannot be done" camunda:assignee="john">
+    <bpmn:userTask id="UserTask_0zw5fya" name="Notify user that rental extension cannot be done" camunda:assignee="demo">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="Transaction_ID" label="Transaction ID" type="string">
@@ -215,7 +215,7 @@ execution.setVariable("waktu_selesai", trans.prop("waktu_selesai").value());]]><
       <bpmn:outgoing>SequenceFlow_09omi8s</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_09omi8s" sourceRef="UserTask_0zw5fya" targetRef="EndEvent_1h9y38s" />
-    <bpmn:userTask id="UserTask_0d235i7" name="Notify user that rental extension is successful" camunda:assignee="john">
+    <bpmn:userTask id="UserTask_0d235i7" name="Notify user that rental extension is successful" camunda:assignee="demo">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="Transaction_ID" label="Transaction ID" type="string">
